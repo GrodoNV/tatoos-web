@@ -1,19 +1,19 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage.jsx';
+import GalleryPage from './pages/GalleryPage.jsx';
+import ConsultPage from './pages/ConsultPage.jsx';
+import MainLayout from './layouts/MainLayout.jsx';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-    <h1 className="text-4xl text-center text-blue-600 font-bold mt-10">
-  ¡Tattoos Web Activa!
-    </h1>
-
-    </>
-  )
+    <Routes>
+      <Route element={<MainLayout />}>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/galeria" element={<GalleryPage />} />
+        <Route path="/consulta" element={<ConsultPage />} />
+      </Route>
+    </Routes>
+  );
 }
 
-export default App
+export default App;

@@ -1,7 +1,6 @@
-<<<<<<< HEAD
 # tatoos-web
 Una web que pueda recuperar informacion para que el administrador de un local de tatuajes pueda recibir pedidos y/o hacer contacto con clientes
-=======
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -14,4 +13,3 @@ Currently, two official plugins are available:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
->>>>>>> b03ad6e (Proyecto Iniciado Con Tailwind y respectivas func dereact)
