@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronDown, Calendar, Clock, Star, Users, Phone } from "lucide-react";
+import { Link } from 'react-router-dom';
 
 const LandingPage = () => {
   // Estado para animaciones de entrada
@@ -90,19 +91,20 @@ const LandingPage = () => {
             Convierte tus ideas en arte permanente con nuestros diseños exclusivos y técnicas innovadoras.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <a
-              href="#contact"
-              className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-full transition-colors duration-300"
-            >
-              Reservar Cita
-            </a>
-            <a
-              href="#portfolio"
-              className="bg-transparent border-2 border-white hover:border-red-500 hover:text-red-500 font-bold py-3 px-8 rounded-full transition-colors duration-300"
-            >
-              Ver Trabajos
-            </a>
-          </div>
+  <Link
+    to="/consulta"
+    className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-full transition-colors duration-300"
+  >
+    Reservar Cita
+  </Link>
+  <Link
+    to="/galeria"
+    className="bg-transparent border-2 border-white hover:border-red-500 hover:text-red-500 font-bold py-3 px-8 rounded-full transition-colors duration-300"
+  >
+    Ver Trabajos
+  </Link>
+</div>
+
         </div>
         
         <a
@@ -167,54 +169,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Portfolio Section */}
-      <section
-        id="portfolio"
-        className="py-20 bg-black"
-      >
-        <div className={`container mx-auto px-4 transition-all duration-1000 ${
-          isVisible.portfolio ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
-        }`}>
-          <div className="text-center mb-12">
-            <h6 className="text-red-500 font-bold mb-2">GALERÍA</h6>
-            <h2 className="text-4xl font-bold mb-4">Mis Mejores Trabajos</h2>
-            <p className="text-gray-300 max-w-2xl mx-auto">
-              Explora mi colección de diseños y estilos. Cada pieza es única y 
-              tiene su propia historia.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tattooGallery.map((item) => (
-              <div 
-                key={item.id} 
-                className="group relative overflow-hidden rounded-lg"
-              >
-                <img
-                  src={item.image}
-                  alt={item.alt}
-                  className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                  <div>
-                    <h3 className="text-xl font-bold">{item.category}</h3>
-                    <p className="text-gray-300">Tatuaje personalizado</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="text-center mt-12">
-            <a
-              href="#contact"
-              className="inline-block bg-transparent border-2 border-white hover:border-red-500 hover:text-red-500 font-bold py-3 px-8 rounded-full transition-colors duration-300"
-            >
-              Solicitar Diseño Personalizado
-            </a>
-          </div>
-        </div>
-      </section>
+      
 
       {/* Services Section */}
       <section
@@ -261,147 +216,6 @@ const LandingPage = () => {
               >
                 Reservar Consulta
               </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section
-        id="testimonials"
-        className="py-20 bg-black"
-      >
-        <div className={`container mx-auto px-4 transition-all duration-1000 ${
-          isVisible.testimonials ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
-        }`}>
-          <div className="text-center mb-12">
-            <h6 className="text-red-500 font-bold mb-2">TESTIMONIOS</h6>
-            <h2 className="text-4xl font-bold mb-4">Lo Que Dicen Mis Clientes</h2>
-            <p className="text-gray-300 max-w-2xl mx-auto">
-              La satisfacción de mis clientes es mi mayor recompensa.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map((item) => (
-              <div
-                key={item}
-                className="bg-gray-800 p-6 rounded-lg"
-              >
-                <div className="flex items-center text-yellow-500 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} fill="currentColor" />
-                  ))}
-                </div>
-                <p className="text-gray-300 mb-6">
-                  "Una experiencia increíble desde la consulta hasta el resultado final. 
-                  El diseño capturó perfectamente lo que yo quería. Definitivamente volveré 
-                  para mi próximo tatuaje."
-                </p>
-                <div className="flex items-center">
-                  <img
-                    src="/api/placeholder/50/50"
-                    alt="Cliente"
-                    className="w-10 h-10 rounded-full mr-3"
-                  />
-                  <div>
-                    <p className="font-bold">Cliente Satisfecho</p>
-                    <p className="text-gray-400 text-sm">Tatuaje de manga completa</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section
-        id="contact"
-        className="py-20 bg-gray-900"
-      >
-        <div className={`container mx-auto px-4 transition-all duration-1000 ${
-          isVisible.contact ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
-        }`}>
-          <div className="flex flex-col lg:flex-row gap-12">
-            <div className="lg:w-1/2">
-              <h6 className="text-red-500 font-bold mb-2">CONTACTO</h6>
-              <h2 className="text-4xl font-bold mb-6">Reserva Tu Sesión</h2>
-              <p className="text-gray-300 mb-8">
-                Completa el formulario para agendar una consulta. Te responderé 
-                lo más pronto posible para discutir tu idea y programar una cita.
-              </p>
-              
-              <div className="space-y-6">
-                <div className="flex items-start">
-                  <div className="mr-4 bg-gray-800 p-3 rounded-lg">
-                    <Clock size={24} className="text-red-500" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold mb-1">Horario</h3>
-                    <p className="text-gray-300">Lunes a Viernes: 10:00 - 20:00</p>
-                    <p className="text-gray-300">Sábados: 12:00 - 18:00</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <div className="mr-4 bg-gray-800 p-3 rounded-lg">
-                    <Phone size={24} className="text-red-500" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold mb-1">Contacto</h3>
-                    <p className="text-gray-300">+123 456 7890</p>
-                    <p className="text-gray-300">info@inkmaster.com</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="lg:w-1/2">
-              <form className="bg-gray-800 p-8 rounded-lg">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-                  <div>
-                    <label className="block text-gray-300 mb-2">Nombre</label>
-                    <input
-                      type="text"
-                      className="w-full bg-gray-700 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                      placeholder="Tu nombre"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-300 mb-2">Correo</label>
-                    <input
-                      type="email"
-                      className="w-full bg-gray-700 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                      placeholder="Tu correo"
-                    />
-                  </div>
-                </div>
-                
-                <div className="mb-6">
-                  <label className="block text-gray-300 mb-2">Asunto</label>
-                  <input
-                    type="text"
-                    className="w-full bg-gray-700 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder="Asunto de tu mensaje"
-                  />
-                </div>
-                
-                <div className="mb-6">
-                  <label className="block text-gray-300 mb-2">Mensaje</label>
-                  <textarea
-                    className="w-full bg-gray-700 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-red-500 h-32"
-                    placeholder="Descríbenos tu idea o proyecto"
-                  ></textarea>
-                </div>
-                
-                <button
-                  type="submit"
-                  className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300"
-                >
-                  Enviar Mensaje
-                </button>
-              </form>
             </div>
           </div>
         </div>
