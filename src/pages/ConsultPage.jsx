@@ -70,8 +70,39 @@ const ContactPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Enviar el formulario
-  const handleSubmit = async (e) => {
+  // Traducir las opciones seleccionadas a texto legible
+  const getTipoTatuajeText = (tipo) => {
+    const tipos = {
+      personalizado: "Diseño Personalizado",
+      flash: "Diseño Flash",
+      lettering: "Lettering/Tipografía",
+      coverup: "Cover Up",
+      realista: "Realista",
+      tradicional: "Tradicional",
+      neotradicional: "Neotradicional",
+      blackwork: "Blackwork",
+      geometrico: "Geométrico",
+      acuarela: "Acuarela",
+      otro: "Otro"
+    };
+    return tipos[tipo] || tipo;
+  };
+
+  const getTamanoText = (tamano) => {
+    const tamanos = {
+      pequeno: "Pequeño (hasta 5 cm)",
+      mediano: "Mediano (5-15 cm)",
+      grande: "Grande (15-30 cm)",
+      muyGrande: "Muy grande (más de 30 cm)",
+      mediaManga: "Media manga",
+      mangaCompleta: "Manga completa",
+      espalda: "Espalda completa"
+    };
+    return tamanos[tamano] || tamano;
+  };
+
+  // Enviar el formulario a WhatsApp
+  const handleSubmit = (e) => {
     e.preventDefault();
     
     // Validar antes de enviar
@@ -83,11 +114,39 @@ const ContactPage = () => {
     setSubmitError("");
     
     try {
-      // Aquí irá la lógica para enviar a Telegram o Email
-      // Por ahora simulamos una llamada API
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Número de WhatsApp del dueño (cambia este número por el real)
+      const whatsappNumber = "59169819891";
       
-      // Resetear el formulario después del envío exitoso
+      // Formato del mensaje
+      const message = `*NUEVA CONSULTA DE TATUAJE*
+      
+*Nombre:* ${formData.nombre}
+*Email:* ${formData.email}
+*Teléfono:* ${formData.telefono}
+*Tipo de Tatuaje:* ${getTipoTatuajeText(formData.tipoTatuaje)}
+*Tamaño:* ${getTamanoText(formData.tamano)}
+*Ubicación:* ${formData.ubicacion}
+*Descripción:* ${formData.descripcion}
+${formData.referencia ? `*Referencia:* ${formData.referencia}` : ''}`;
+      
+      // Codificar el mensaje para URL
+      const encodedMessage = encodeURIComponent(message);
+      
+      // Crear la URL de WhatsApp
+      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+      
+      // Abrir WhatsApp en una nueva pestaña
+      window.open(whatsappUrl, '_blank');
+      
+      // Mostrar mensaje de éxito
+      setSubmitSuccess(true);
+      
+      // Ocultar el mensaje de éxito después de 5 segundos
+      setTimeout(() => {
+        setSubmitSuccess(false);
+      }, 5000);
+      
+      // Resetear el formulario
       setFormData({
         nombre: "",
         email: "",
@@ -99,16 +158,9 @@ const ContactPage = () => {
         referencia: "",
       });
       
-      setSubmitSuccess(true);
-      
-      // Ocultar el mensaje de éxito después de 5 segundos
-      setTimeout(() => {
-        setSubmitSuccess(false);
-      }, 5000);
-      
     } catch (error) {
-      console.error("Error al enviar el formulario:", error);
-      setSubmitError("Hubo un problema al enviar tu solicitud. Por favor, intenta nuevamente.");
+      console.error("Error al abrir WhatsApp:", error);
+      setSubmitError("Hubo un problema al abrir WhatsApp. Por favor, intenta nuevamente.");
     } finally {
       setIsSubmitting(false);
     }
@@ -217,7 +269,7 @@ const ContactPage = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <p>¡Tu solicitud ha sido enviada con éxito! Nos pondremos en contacto contigo pronto.</p>
+                  <p>¡Tu solicitud ha sido enviada con éxito! Se ha abierto WhatsApp con tu información.</p>
                 </div>
               )}
               
@@ -411,7 +463,7 @@ const ContactPage = () => {
                       ) : (
                         <>
                           <Send size={18} className="mr-2" />
-                          Enviar Consulta
+                          Enviar a WhatsApp
                         </>
                       )}
                     </button>

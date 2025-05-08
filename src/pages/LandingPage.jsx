@@ -210,12 +210,12 @@ const LandingPage = () => {
                   Agenda una consulta gratuita para discutir tu idea.
                 </p>
               </div>
-              <a
-                href="#contact"
-                className="mt-6 md:mt-0 bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-full transition-colors duration-300"
-              >
-                Reservar Consulta
-              </a>
+              <Link
+  to="/consulta"
+  className="mt-6 md:mt-0 bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-full transition-colors duration-300"
+>
+  Reservar Consulta
+</Link>
             </div>
           </div>
         </div>
