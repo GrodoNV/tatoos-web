@@ -8,13 +8,8 @@ const MainLayout = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(window.scrollY > 20);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -27,37 +22,32 @@ const MainLayout = () => {
           scrolled ? "bg-black bg-opacity-90 shadow-lg" : "bg-transparent"
         }`}
       >
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           {/* Logo */}
-          <div className="flex items-center">
-            <Link to="/" className="text-2xl font-bold italic tracking-wider text-red-500">
-              INK<span className="text-white">MASTER</span>
-            </Link>
-          </div>
+          <Link
+            to="/"
+            className="text-2xl font-bold italic tracking-wider bg-gradient-to-r from-red-500 to-purple-600 bg-clip-text text-transparent"
+          >
+            INK<span className="text-white">MASTER</span>
+          </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            <Link
-              to="/"
-              className="text-lg hover:text-red-500 transition-colors duration-300"
-            >
-              Inicio
-            </Link>
-            <Link
-              to="/galeria"
-              className="text-lg hover:text-red-500 transition-colors duration-300"
-            >
-              Galería
-            </Link>
-            <Link
-              to="/consulta"
-              className="text-lg hover:text-red-500 transition-colors duration-300"
-            >
-              Consulta
-            </Link>
+          <nav className="hidden md:flex space-x-8 items-center">
+            {["/", "/galeria", "/consulta"].map((path, index) => {
+              const labels = ["Inicio", "Galería", "Consulta"];
+              return (
+                <Link
+                  key={path}
+                  to={path}
+                  className="text-lg text-gray-300 hover:text-white hover:underline underline-offset-4 decoration-red-500 transition duration-300"
+                >
+                  {labels[index]}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Toggle */}
           <button
             className="md:hidden text-white focus:outline-none"
             onClick={() => setIsOpen(!isOpen)}
@@ -66,78 +56,67 @@ const MainLayout = () => {
           </button>
         </div>
 
-        {/* Mobile Navigation */}
-        <div
-          className={`md:hidden fixed inset-0 bg-black bg-opacity-95 z-40 transform transition-transform duration-300 ease-in-out ${
-            isOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+        {/* Mobile Menu */}
+        {/* Mobile Menu */}
+<div
+  className={`md:hidden fixed top-20 right-4 w-48 bg-gray-800 rounded-lg shadow-lg z-50 transition-all duration-300 ${
+    isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
+  }`}
+>
+  <div className="flex flex-col text-center py-4 space-y-4">
+    {["/", "/galeria", "/consulta"].map((path, index) => {
+      const labels = ["Inicio", "Galería", "Consulta"];
+      return (
+        <Link
+          key={path}
+          to={path}
+          onClick={() => setIsOpen(false)}
+          className="text-white hover:text-red-400 transition-colors duration-200"
         >
-          <div className="flex flex-col items-center justify-center h-full space-y-8 text-2xl">
-            <Link
-              to="/"
-              className="hover:text-red-500 transition-colors duration-300"
-              onClick={() => setIsOpen(false)}
-            >
-              Inicio
-            </Link>
-            <Link
-              to="/galeria"
-              className="hover:text-red-500 transition-colors duration-300"
-              onClick={() => setIsOpen(false)}
-            >
-              Galería
-            </Link>
-            <Link
-              to="/consulta"
-              className="hover:text-red-500 transition-colors duration-300"
-              onClick={() => setIsOpen(false)}
-            >
-              Consulta
-            </Link>
-          </div>
-        </div>
+          {labels[index]}
+        </Link>
+      );
+    })}
+  </div>
+</div>
+
       </header>
 
       {/* Main Content */}
-      <main className="pt-16">
+      <main className="pt-20 px-4">
         <Outlet />
       </main>
 
       {/* Footer */}
-      <footer className="bg-black py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-8 md:mb-0">
-              <span className="text-2xl font-bold italic tracking-wider text-red-500">
-                INK<span className="text-white">MASTER</span>
-              </span>
-              <p className="mt-2 text-gray-400">Arte en tu piel, para siempre.</p>
-            </div>
-
-            <div className="flex space-x-6">
-              <a
-                href="#"
-                className="text-gray-400 hover:text-red-500 transition-colors duration-300"
-              >
-                <Instagram size={24} />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-red-500 transition-colors duration-300"
-              >
-                <Facebook size={24} />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-red-500 transition-colors duration-300"
-              >
-                <Twitter size={24} />
-              </a>
-            </div>
+      <footer className="bg-black mt-16 py-10 text-center border-t border-gray-800">
+        <div className="container mx-auto px-4 space-y-6">
+          <h3 className="text-3xl font-bold bg-gradient-to-r from-red-500 to-purple-600 bg-clip-text text-transparent">
+            ¡Gracias por visitar InkMaster!
+          </h3>
+          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+            Sígueme en redes sociales para ver más trabajos y agendar tu cita.
+          </p>
+          <div className="flex justify-center space-x-6">
+            <a
+              href="#"
+              className="text-gray-400 hover:text-red-500 transition duration-300"
+            >
+              <Instagram />
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 hover:text-red-500 transition duration-300"
+            >
+              <Facebook />
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 hover:text-red-500 transition duration-300"
+            >
+              <Twitter />
+            </a>
           </div>
-          <div className="mt-8 border-t border-gray-800 pt-8 text-center text-gray-500">
-            <p>© {new Date().getFullYear()} INKMASTER. Todos los derechos reservados.</p>
-          </div>
+          <p className="text-sm text-gray-600">&copy; {new Date().getFullYear()} InkMaster. Todos los derechos reservados.</p>
         </div>
       </footer>
     </div>

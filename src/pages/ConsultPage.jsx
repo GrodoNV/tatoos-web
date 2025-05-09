@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Phone, Mail, MapPin, Send, AlertCircle } from "lucide-react";
 
 const ContactPage = () => {
@@ -13,7 +13,12 @@ const ContactPage = () => {
     descripcion: "",
     referencia: "",
   });
-  
+
+  // Efecto para hacer scroll al inicio cuando se cargue la página
+  useEffect(() => {
+    window.scrollTo(0, 0);  // Desplaza hacia arriba cuando se carga la página
+  }, []);  // El array vacío asegura que solo se ejecute al montar el componente
+
   // Estado para mensajes de validación
   const [errors, setErrors] = useState({});
   // Estado para mensaje de éxito
