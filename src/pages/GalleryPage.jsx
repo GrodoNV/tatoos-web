@@ -1,137 +1,141 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 
-// Reemplaza estos links con los tuyos reales desde Cloudinary
+// Simulamos Link para mantener la funcionalidad
+const Link = ({ to, children, className }) => (
+  <a href={to} className={className}>
+    {children}
+  </a>
+);
+
+// GALERÍA DE TATUAJES
 const tattooGallery = [
-  { 
-    id: 1, 
-    category: "Tradicional", 
-    image: "https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill/tradicional1.jpg", 
+  {
+    id: 1,
+    category: "Tradicional",
+    image: "https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill/tradicional1.jpg",
     alt: "Tatuaje tradicional americano con ancla y rosas",
     description: "Líneas gruesas y colores vivos que perduran en el tiempo"
   },
-  { 
-    id: 2, 
-    category: "Realista", 
-    image: "https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill/realista1.jpg", 
+  {
+    id: 2,
+    category: "Realista",
+    image: "https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill/realista1.jpg",
     alt: "Tatuaje realista de retrato con sombras detalladas",
     description: "Técnica fotográfica con increíble nivel de detalle"
   },
-  { 
-    id: 3, 
-    category: "Neo-tradicional", 
-    image: "https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill/neotradicional1.jpg", 
+  {
+    id: 3,
+    category: "Neo-tradicional",
+    image: "https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill/neotradicional1.jpg",
     alt: "Tatuaje neo-tradicional de animal con colores vibrantes",
     description: "Fusión perfecta entre técnicas modernas y estética clásica"
   },
-  { 
-    id: 4, 
-    category: "Blackwork", 
-    image: "https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill/blackwork1.jpg", 
+  {
+    id: 4,
+    category: "Blackwork",
+    image: "https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill/blackwork1.jpg",
     alt: "Tatuaje blackwork con patrones geométricos",
     description: "Negros profundos y diseños impactantes que destacan en la piel"
   },
-  { 
-    id: 5, 
-    category: "Acuarela", 
-    image: "https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill/acuarela1.jpg", 
+  {
+    id: 5,
+    category: "Acuarela",
+    image: "https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill/acuarela1.jpg",
     alt: "Tatuaje estilo acuarela con salpicaduras de color",
     description: "Efecto artístico de pintura con transiciones suaves de color"
   },
-  { 
-    id: 6, 
-    category: "Minimalista", 
-    image: "https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill/minimalista1.jpg", 
+  {
+    id: 6,
+    category: "Minimalista",
+    image: "https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill/minimalista1.jpg",
     alt: "Tatuaje minimalista de líneas finas",
     description: "Diseños elegantes y simples que transmiten grandes ideas"
   },
+  {
+    id: 7,
+    category: "Mandala",
+    image: "https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill/mandala1.jpg",
+    alt: "Tatuaje de mandala con detalles intrincados",
+    description: "Patrones sagrados con significado espiritual profundo"
+  },
+  {
+    id: 8,
+    category: "Lettering",
+    image: "https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill/lettering1.jpg",
+    alt: "Tatuaje de lettering con caligrafía artística",
+    description: "Palabras que cobran vida con tipografía única"
+  },
+  {
+    id: 9,
+    category: "Japonés",
+    image: "https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill/japones1.jpg",
+    alt: "Tatuaje estilo japonés tradicional",
+    description: "Arte oriental con técnicas ancestrales"
+  }
 ];
 
-const categories = ["Todos", ...new Set(tattooGallery.map(item => item.category))];
-
 const GalleryPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState("Todos");
-  const [filteredGallery, setFilteredGallery] = useState(tattooGallery);
   const [isVisible, setIsVisible] = useState(false);
-  const [hoveredItem, setHoveredItem] = useState(null);
 
   useEffect(() => {
-    if (selectedCategory === "Todos") {
-      setFilteredGallery(tattooGallery);
-    } else {
-      setFilteredGallery(tattooGallery.filter(item => item.category === selectedCategory));
-    }
-
-    setIsVisible(false);
     setTimeout(() => setIsVisible(true), 100);
-  }, [selectedCategory]);
-
-  useEffect(() => {
-    setIsVisible(true);
   }, []);
 
   return (
-    <section className="py-20 bg-gray-900 text-white">
-      <div className="container mx-auto px-4">
+    <section className="py-16 bg-black text-white">
+      <div className="container mx-auto px-4 sm:px-6">
+        {/* Encabezado */}
         <div className="text-center mb-12">
-          <h6 className="text-red-500 font-bold uppercase tracking-wider mb-2">Galería de Arte</h6>
-          <h2 className="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-purple-600">
+          <h6
+            className="text-yellow-400 text-6xl tracking-wide mb-1"
+            style={{ fontFamily: "Ruthie, cursive" }}
+          >
+            Galería de Arte
+          </h6>
+          <h2
+            className="text-4xl sm:text-5xl font-bold mb-4"
+            style={{ fontFamily: "Great Vibes, cursive" }}
+          >
             Mi Colección de Tatuajes
           </h2>
-          <p className="text-gray-300 max-w-2xl mx-auto text-lg">
-            Cada diseño refleja mi pasión por el arte corporal. Piezas únicas creadas 
+          <p
+            className="text-gray-300 text-base sm:text-lg max-w-2xl mx-auto"
+            style={{ fontFamily: "Lato, sans-serif" }}
+          >
+            Cada diseño refleja mi pasión por el arte corporal. Piezas únicas creadas
             con técnica, creatividad y respeto por la tradición del tatuaje.
           </p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
-          {categories.map(category => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                selectedCategory === category
-                  ? "bg-red-600 text-white shadow-lg shadow-red-500/30"
-                  : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-
-        <div 
-          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 transition-opacity duration-500 ${
-            isVisible ? "opacity-100" : "opacity-0"
+        {/* Galería */}
+        <div
+          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-1000 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          {filteredGallery.map((item) => (
-            <div 
-              key={item.id} 
-              className="group relative overflow-hidden rounded-lg shadow-xl transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-red-500/20"
-              onMouseEnter={() => setHoveredItem(item.id)}
-              onMouseLeave={() => setHoveredItem(null)}
+          {tattooGallery.map((item) => (
+            <div
+              key={item.id}
+              className="group relative overflow-hidden rounded-2xl shadow-xl bg-gray-800"
             >
-              <picture>
-                <source srcSet={item.image} media="(min-width: 1024px)" />
-                <source srcSet={item.image} media="(min-width: 640px)" />
-                <img 
-                  src={item.image} 
-                  alt={item.alt} 
-                  className="w-full h-96 object-cover transition-transform duration-700 group-hover:scale-110" 
+              {/* Imagen */}
+              <div className="relative overflow-hidden">
+                <img
+                  src={item.image}
+                  alt={item.alt}
+                  className="w-full h-72 object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-              </picture>
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
 
-              <div 
-                className={`absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent flex flex-col justify-end p-6 transition-all duration-500 ${hoveredItem === item.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
-              >
-                <span className="inline-block px-3 py-1 bg-red-600 text-xs font-bold rounded-full mb-2 transform -translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                  {item.category}
-                </span>
-                <h3 className="text-2xl font-bold mb-1 transform -translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">
+                
+              </div>
+
+              {/* Texto */}
+              <div className="p-5">
+                <h3 className="text-xl font-semibold mb-2 text-white" style={{ fontFamily: "Great Vibes, cursive" }}>
                   {item.category}
                 </h3>
-                <p className="text-gray-300 transform -translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-150">
+                <p className="text-gray-300 text-sm leading-relaxed" style={{ fontFamily: "Lato, sans-serif" }}>
                   {item.description}
                 </p>
               </div>
@@ -139,15 +143,28 @@ const GalleryPage = () => {
           ))}
         </div>
 
+        {/* CTA */}
         <div className="mt-16 text-center">
-          <p className="text-lg text-gray-300 mb-6">
-            ¿Te gusta lo que ves? Agenda una consulta para diseñar tu próximo tatuaje
+          <p
+            className="text-gray-300 text-base sm:text-lg mb-6 max-w-2xl mx-auto"
+            style={{ fontFamily: "Lato, sans-serif" }}
+          >
+            ¿Te gusta lo que ves? Agenda una consulta para diseñar tu próximo tatuaje.
           </p>
-          <Link to="/consulta">
-            <button className="px-8 py-3 bg-gradient-to-r from-red-600 to-purple-600 text-white font-bold rounded-lg shadow-xl hover:shadow-red-500/50 transition-all duration-300 transform hover:scale-105">
-              Reservar Cita
-            </button>
-          </Link>
+          <Link to="/consulta" className="w-full sm:w-auto text-center">
+  <button
+    className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-2 
+               bg-yellow-400/20 backdrop-blur-md text-yellow-300 
+               font-medium rounded-full shadow-lg 
+               transition-all duration-300 text-base sm:text-sm 
+               transform active:scale-95 hover:scale-105 
+               hover:bg-yellow-400/30 border border-yellow-500"
+    style={{ fontFamily: 'Lato, sans-serif' }}
+  >
+    Reservar Cita
+  </button>
+</Link>
+
         </div>
       </div>
     </section>

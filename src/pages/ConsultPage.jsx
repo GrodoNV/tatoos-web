@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Phone, Mail, MapPin, Send, AlertCircle } from "lucide-react";
-
-const ContactPage = () => {
+import { Phone, Mail, MapPin, Send, AlertCircle, Check, ChevronDown } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
+const ConsultPage = () => {
   // Estado para el formulario
   const [formData, setFormData] = useState({
     nombre: "",
@@ -10,14 +10,15 @@ const ContactPage = () => {
     tipoTatuaje: "personalizado",
     tamano: "pequeno",
     ubicacion: "",
+    lado: "na",
     descripcion: "",
     referencia: "",
   });
 
   // Efecto para hacer scroll al inicio cuando se cargue la página
   useEffect(() => {
-    window.scrollTo(0, 0);  // Desplaza hacia arriba cuando se carga la página
-  }, []);  // El array vacío asegura que solo se ejecute al montar el componente
+    window.scrollTo(0, 0);
+  }, []);
 
   // Estado para mensajes de validación
   const [errors, setErrors] = useState({});
@@ -28,13 +29,96 @@ const ContactPage = () => {
   // Estado para indicar que está enviando
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Opciones para ubicación del cuerpo
+  const ubicacionesCorpo = [
+    { value: "", label: "Selecciona una ubicación" },
+    // Cabeza y cuello
+    { value: "cabeza", label: "Cabeza" },
+    { value: "frente", label: "Frente" },
+    { value: "cuero_cabelludo", label: "Cuero cabelludo" },
+    { value: "detras_oreja", label: "Detrás de la oreja" },
+    { value: "cuello_frontal", label: "Cuello frontal" },
+    { value: "cuello_lateral", label: "Cuello lateral" },
+    { value: "nuca", label: "Nuca" },
+    
+    // Torso frontal
+    { value: "pecho", label: "Pecho" },
+    { value: "clavicula", label: "Clavícula" },
+    { value: "costillas", label: "Costillas" },
+    { value: "abdomen", label: "Abdomen" },
+    { value: "estomago", label: "Estómago" },
+    
+    // Torso posterior
+    { value: "espalda_alta", label: "Espalda alta" },
+    { value: "espalda_media", label: "Espalda media" },
+    { value: "espalda_baja", label: "Espalda baja" },
+    { value: "espalda_completa", label: "Espalda completa" },
+    { value: "omoplato", label: "Omóplato" },
+    
+    // Brazos
+    { value: "hombro", label: "Hombro" },
+    { value: "brazo_completo", label: "Brazo completo" },
+    { value: "biceps", label: "Bíceps" },
+    { value: "triceps", label: "Tríceps" },
+    { value: "antebrazo", label: "Antebrazo" },
+    { value: "codo", label: "Codo" },
+    { value: "muneca", label: "Muñeca" },
+    
+    // Manos
+    { value: "mano", label: "Mano" },
+    { value: "dedos", label: "Dedos" },
+    { value: "nudillos", label: "Nudillos" },
+    
+    // Piernas
+    { value: "muslo", label: "Muslo" },
+    { value: "rodilla", label: "Rodilla" },
+    { value: "pantorrilla", label: "Pantorrilla" },
+    { value: "tibia", label: "Tibia" },
+    { value: "tobillo", label: "Tobillo" },
+    { value: "pierna_completa", label: "Pierna completa" },
+    
+    // Pies
+    { value: "pie", label: "Pie" },
+    { value: "empeine", label: "Empeine" },
+    { value: "planta_pie", label: "Planta del pie" },
+    { value: "dedos_pie", label: "Dedos del pie" },
+    
+    // Otras áreas
+    { value: "gluteos", label: "Glúteos" },
+    { value: "cadera", label: "Cadera" },
+    { value: "ingle", label: "Ingle" },
+    { value: "axila", label: "Axila" },
+  ];
+
+  // Determinar si la ubicación necesita especificar lado
+  const necesitaLado = (ubicacion) => {
+    const ubicacionesBilaterales = [
+      'detras_oreja', 'cuello_lateral', 'clavicula', 'costillas', 'omoplato', 
+      'hombro', 'brazo_completo', 'biceps', 'triceps', 'antebrazo', 'codo', 
+      'muneca', 'mano', 'dedos', 'nudillos', 'muslo', 'rodilla', 'pantorrilla', 
+      'tibia', 'tobillo', 'pierna_completa', 'pie', 'empeine', 'planta_pie', 
+      'dedos_pie', 'gluteos', 'cadera', 'ingle', 'axila'
+    ];
+    return ubicacionesBilaterales.includes(ubicacion);
+  };
+
   // Manejar cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    
+    // Si cambia la ubicación, resetear el lado
+    if (name === 'ubicacion') {
+      setFormData({
+        ...formData,
+        [name]: value,
+        lado: necesitaLado(value) ? "" : "na"
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
     
     // Limpiar error del campo cuando el usuario escribe
     if (errors[name]) {
@@ -65,6 +149,10 @@ const ContactPage = () => {
     
     if (!formData.ubicacion.trim()) {
       newErrors.ubicacion = "La ubicación del tatuaje es obligatoria";
+    }
+    
+    if (necesitaLado(formData.ubicacion) && !formData.lado) {
+      newErrors.lado = "Especifica el lado para esta ubicación";
     }
     
     if (!formData.descripcion.trim()) {
@@ -106,11 +194,24 @@ const ContactPage = () => {
     return tamanos[tamano] || tamano;
   };
 
+  const getUbicacionText = (ubicacion) => {
+    const ubicacionObj = ubicacionesCorpo.find(u => u.value === ubicacion);
+    return ubicacionObj ? ubicacionObj.label : ubicacion;
+  };
+
+  const getLadoText = (lado) => {
+    const lados = {
+      izquierdo: "Lado izquierdo",
+      derecho: "Lado derecho",
+      na: "No aplica"
+    };
+    return lados[lado] || lado;
+  };
+
   // Enviar el formulario a WhatsApp
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Validar antes de enviar
     if (!validateForm()) {
       return;
     }
@@ -119,10 +220,10 @@ const ContactPage = () => {
     setSubmitError("");
     
     try {
-      // Número de WhatsApp del dueño (cambia este número por el real)
-      const whatsappNumber = "59169819891";
+      const whatsappNumber = "59175233602";
       
-      // Formato del mensaje
+      const ladoInfo = necesitaLado(formData.ubicacion) ? `\n*Lado:* ${getLadoText(formData.lado)}` : '';
+      
       const message = `*NUEVA CONSULTA DE TATUAJE*
       
 *Nombre:* ${formData.nombre}
@@ -130,23 +231,16 @@ const ContactPage = () => {
 *Teléfono:* ${formData.telefono}
 *Tipo de Tatuaje:* ${getTipoTatuajeText(formData.tipoTatuaje)}
 *Tamaño:* ${getTamanoText(formData.tamano)}
-*Ubicación:* ${formData.ubicacion}
+*Ubicación:* ${getUbicacionText(formData.ubicacion)}${ladoInfo}
 *Descripción:* ${formData.descripcion}
 ${formData.referencia ? `*Referencia:* ${formData.referencia}` : ''}`;
       
-      // Codificar el mensaje para URL
       const encodedMessage = encodeURIComponent(message);
-      
-      // Crear la URL de WhatsApp
       const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
       
-      // Abrir WhatsApp en una nueva pestaña
       window.open(whatsappUrl, '_blank');
-      
-      // Mostrar mensaje de éxito
       setSubmitSuccess(true);
       
-      // Ocultar el mensaje de éxito después de 5 segundos
       setTimeout(() => {
         setSubmitSuccess(false);
       }, 5000);
@@ -159,6 +253,7 @@ ${formData.referencia ? `*Referencia:* ${formData.referencia}` : ''}`;
         tipoTatuaje: "personalizado",
         tamano: "pequeno",
         ubicacion: "",
+        lado: "na",
         descripcion: "",
         referencia: "",
       });
@@ -172,125 +267,184 @@ ${formData.referencia ? `*Referencia:* ${formData.referencia}` : ''}`;
   };
 
   return (
-    <div className="bg-gray-900 text-white">
-      {/* Hero Section */}
-      <div className="relative bg-black py-16">
-        <div className="absolute inset-0 opacity-30 bg-[url('/images/tattoo-bg.jpg')] bg-cover bg-center"></div>
-        <div className="container mx-auto px-4 relative z-10 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Agenda tu Consulta</h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Cuéntanos sobre el tatuaje de tus sueños y nos pondremos en contacto contigo para hacer realidad tu idea.
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white">
+      {/* Google Fonts */}
+      <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=Great+Vibes&family=Lato:wght@300;400;700&family=Ruthie&display=swap" rel="stylesheet" />
+
+      {/* Hero Section con gradiente mejorado */}
+      <div className="relative overflow-hidden bg-black ">
+ 
+
+  <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-zinc-900/70 to-black/90"></div>
+
+  <div className="relative px-4 py-20 md:py-32">
+    <div className="max-w-4xl mx-auto text-center">
+      <h1
+        className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-yellow-300 via-yellow-500 to-amber-400 bg-clip-text text-transparent"
+        style={{ fontFamily: 'UnifrakturCook, cursive' }}
+      >
+        Agenda tu Consulta
+      </h1>
+      <p
+        className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed"
+        style={{ fontFamily: 'Lato, sans-serif' }}
+      >
+        Cuéntanos sobre el tatuaje de tus sueños y nos pondremos en contacto contigo para hacerlo realidad.
+      </p>
+      <div className="mt-8 flex justify-center">
+        <div className="w-24 h-1 bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-400 rounded-full shadow-md"></div>
       </div>
+    </div>
+  </div>
+</div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <div className="max-w-7xl mx-auto px-4 py-12 md:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
           {/* Información de contacto */}
-          <div className="lg:col-span-1 bg-gray-800 p-8 rounded-sm">
-            <h2 className="text-2xl font-bold mb-6">Información de Contacto</h2>
-            
-            <div className="space-y-6">
-              <div className="flex items-start">
-                <MapPin className="mr-4 text-red-500" size={24} />
-                <div>
-                  <h3 className="font-semibold">Ubicación</h3>
-                  <p className="text-gray-400 mt-1">Av. Revolución 123, Col. Condesa, CDMX</p>
+          <div className="lg:col-span-1">
+            <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 p-6 md:p-8 rounded-2xl shadow-2xl">
+              <h2 className="text-2xl md:text-3xl font-bold mb-8 text-yellow-400"
+                style={{ fontFamily: 'Great Vibes, cursive' }}>Información de Contacto</h2>
+              
+              <div className="space-y-6">
+                <div className="flex items-start group hover:transform hover:scale-105 transition-all duration-300">
+                  <div className="bg-yellow-500/20 p-3 rounded-xl mr-4 group-hover:bg-yellow-500/30 transition-colors">
+                    <MapPin className="text-yellow-400" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg" style={{ fontFamily: 'Lato, sans-serif' }}>Ubicación</h3>
+                    <p className="text-gray-400 mt-1" style={{ fontFamily: 'Lato, sans-serif' }}>Av. Revolución 123, Col. Condesa, CDMX</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start group hover:transform hover:scale-105 transition-all duration-300">
+                  <div className="bg-yellow-500/20 p-3 rounded-xl mr-4 group-hover:bg-yellow-500/30 transition-colors">
+                    <Phone className="text-yellow-400" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg" style={{ fontFamily: 'Lato, sans-serif' }}>Teléfono</h3>
+                    <p className="text-gray-400 mt-1" style={{ fontFamily: 'Lato, sans-serif' }}>(+52) 55 1234 5678</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start group hover:transform hover:scale-105 transition-all duration-300">
+                  <div className="bg-yellow-500/20 p-3 rounded-xl mr-4 group-hover:bg-yellow-500/30 transition-colors">
+                    <Mail className="text-yellow-400" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg" style={{ fontFamily: 'Lato, sans-serif' }}>Email</h3>
+                    <p className="text-gray-400 mt-1" style={{ fontFamily: 'Lato, sans-serif' }}>info@inkmaster.com</p>
+                  </div>
                 </div>
               </div>
               
-              <div className="flex items-start">
-                <Phone className="mr-4 text-red-500" size={24} />
-                <div>
-                  <h3 className="font-semibold">Teléfono</h3>
-                  <p className="text-gray-400 mt-1">(+52) 55 1234 5678</p>
+              <div className="mt-10">
+                <h3 className="text-xl font-semibold mb-6 text-yellow-400" style={{ fontFamily: 'Great Vibes, cursive' }}>Horario de Atención</h3>
+                <div className="space-y-3">
+                  {[
+                    { dia: "Lunes", horario: "Cerrado" },
+                    { dia: "Martes - Viernes", horario: "12:00 - 21:00" },
+                    { dia: "Sábado", horario: "10:00 - 18:00" },
+                    { dia: "Domingo", horario: "Cerrado" }
+                  ].map((item, index) => (
+                    <div key={index} className="flex justify-between items-center py-2 border-b border-gray-700/30">
+                      <span className="text-gray-300" style={{ fontFamily: 'Lato, sans-serif' }}>{item.dia}</span>
+                      <span className={`font-medium ${item.horario === "Cerrado" ? "text-red-400" : "text-green-400"}`}
+                        style={{ fontFamily: 'Lato, sans-serif' }}>
+                        {item.horario}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
               
-              <div className="flex items-start">
-                <Mail className="mr-4 text-red-500" size={24} />
-                <div>
-                  <h3 className="font-semibold">Email</h3>
-                  <p className="text-gray-400 mt-1">info@inkmaster.com</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-10">
-              <h3 className="text-xl font-semibold mb-4">Horario de Atención</h3>
-              <div className="space-y-2 text-gray-400">
-                <p className="flex justify-between">
-                  <span>Lunes</span>
-                  <span>Cerrado</span>
-                </p>
-                <p className="flex justify-between">
-                  <span>Martes - Viernes</span>
-                  <span>12:00 - 21:00</span>
-                </p>
-                <p className="flex justify-between">
-                  <span>Sábado</span>
-                  <span>10:00 - 18:00</span>
-                </p>
-                <p className="flex justify-between">
-                  <span>Domingo</span>
-                  <span>Cerrado</span>
-                </p>
-              </div>
-            </div>
-            
-            <div className="mt-10">
-              <h3 className="text-xl font-semibold mb-4">Síguenos</h3>
-              <div className="flex space-x-4">
-                <a href="#" className="bg-gray-700 p-3 rounded-full hover:bg-red-500 transition-colors duration-300">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"></path>
-                  </svg>
-                </a>
-                <a href="#" className="bg-gray-700 p-3 rounded-full hover:bg-red-500 transition-colors duration-300">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
-                  </svg>
-                </a>
-                <a href="#" className="bg-gray-700 p-3 rounded-full hover:bg-red-500 transition-colors duration-300">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
-                  </svg>
-                </a>
-              </div>
+              <div className="mt-10">
+  <h3 className="text-xl font-semibold mb-6 text-yellow-400" style={{ fontFamily: 'Great Vibes, cursive' }}>
+    Síguenos
+  </h3>
+<div className="flex space-x-4">
+  {/* TikTok */}
+  <a
+    href="https://www.tiktok.com/@usuario"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-black text-white p-3 rounded-xl transition-transform duration-300 hover:scale-110 hover:bg-[#69C9D0]"
+    aria-label="TikTok"
+  >
+    <svg className="w-5 h-5" viewBox="0 0 48 48" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M41,14.4c-4.4,0-8-3.6-8-8h-5v27c0,2.8-2.2,5-5,5s-5-2.2-5-5s2.2-5,5-5c0.7,0,1.4,0.2,2,0.4V22.9c-0.7-0.1-1.3-0.2-2-0.2c-5.5,0-10,4.5-10,10s4.5,10,10,10s10-4.5,10-10v-14c2.3,1.8,5.2,2.9,8.3,2.9V14.4z"/>
+    </svg>
+  </a>
+
+  {/* Facebook */}
+  <a
+    href="https://www.facebook.com/tu-pagina"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-[#1877F2] text-white p-3 rounded-xl transition-transform duration-300 hover:scale-110 hover:bg-[#156ACF]"
+    aria-label="Facebook"
+  >
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22 12.07C22 6.48 17.52 2 12 2S2 6.48 2 12.07c0 5 3.66 9.13 8.44 9.93v-7.03H8.07v-2.9h2.37V9.85c0-2.34 1.4-3.63 3.52-3.63 1.02 0 2.09.18 2.09.18v2.3h-1.18c-1.16 0-1.52.72-1.52 1.46v1.76h2.59l-.41 2.9h-2.18v7.03C18.34 21.2 22 17.07 22 12.07z"/>
+    </svg>
+  </a>
+
+  {/* Instagram */}
+  <a
+    href="https://www.instagram.com/tuusuario"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="p-3 rounded-xl bg-gradient-to-tr from-[#f58529] via-[#dd2a7b] to-[#8134af] text-white transition-transform duration-300 hover:scale-110 hover:brightness-110"
+    aria-label="Instagram"
+  >
+    <svg
+      className="w-5 h-5"
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M7.75 2h8.5A5.75 5.75 0 0122 7.75v8.5A5.75 5.75 0 0116.25 22h-8.5A5.75 5.75 0 012 16.25v-8.5A5.75 5.75 0 017.75 2zm0 1.5A4.25 4.25 0 003.5 7.75v8.5A4.25 4.25 0 007.75 20.5h8.5a4.25 4.25 0 004.25-4.25v-8.5A4.25 4.25 0 0016.25 3.5h-8.5zM12 7a5 5 0 110 10 5 5 0 010-10zm0 1.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7zm5.25-.75a.75.75 0 110 1.5.75.75 0 010-1.5z"/>
+    </svg>
+  </a>
+</div>
+
+</div>
+
             </div>
           </div>
           
           {/* Formulario de contacto */}
           <div className="lg:col-span-2">
-            <div className="bg-gray-800 p-8 rounded-sm">
-              <h2 className="text-2xl font-bold mb-6">Formulario de Consulta</h2>
+            <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 p-6 md:p-8 rounded-2xl shadow-2xl">
+              <h2 className="text-2xl md:text-3xl font-bold mb-8 text-yellow-400"
+                style={{ fontFamily: 'UnifrakturCook, cursive' }}>Formulario de Consulta</h2>
               
               {/* Mensaje de éxito */}
               {submitSuccess && (
-                <div className="mb-6 bg-green-800 text-white p-4 rounded-sm flex items-center">
-                  <div className="mr-3 text-green-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
+                <div className="mb-6 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 text-white p-4 rounded-xl flex items-center backdrop-blur-sm">
+                  <div className="bg-green-500/20 p-2 rounded-full mr-3">
+                    <Check className="text-green-400" size={20} />
                   </div>
-                  <p>¡Tu solicitud ha sido enviada con éxito! Se ha abierto WhatsApp con tu información.</p>
+                  <p className="font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>¡Tu solicitud ha sido enviada con éxito! Se ha abierto WhatsApp con tu información.</p>
                 </div>
               )}
               
               {/* Mensaje de error */}
               {submitError && (
-                <div className="mb-6 bg-red-900 text-white p-4 rounded-sm flex items-center">
-                  <AlertCircle className="mr-3 text-red-400" size={24} />
-                  <p>{submitError}</p>
+                <div className="mb-6 bg-gradient-to-r from-red-500/20 to-pink-500/20 border border-red-500/30 text-white p-4 rounded-xl flex items-center backdrop-blur-sm">
+                  <div className="bg-red-500/20 p-2 rounded-full mr-3">
+                    <AlertCircle className="text-red-400" size={20} />
+                  </div>
+                  <p className="font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>{submitError}</p>
                 </div>
               )}
               
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Nombre */}
-                  <div>
-                    <label htmlFor="nombre" className="block text-gray-300 mb-2">
+                  <div className="space-y-2">
+                    <label htmlFor="nombre" className="block text-gray-300 font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>
                       Nombre completo *
                     </label>
                     <input
@@ -299,17 +453,18 @@ ${formData.referencia ? `*Referencia:* ${formData.referencia}` : ''}`;
                       name="nombre"
                       value={formData.nombre}
                       onChange={handleChange}
-                      className={`w-full bg-gray-700 border ${
-                        errors.nombre ? "border-red-500" : "border-gray-600"
-                      } rounded-sm px-4 py-3 focus:outline-none focus:border-red-500`}
-                      placeholder="Tu nombre"
+                      className={`w-full bg-gray-700/50 backdrop-blur-sm border ${
+                        errors.nombre ? "border-red-500" : "border-gray-600/50"
+                      } rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all duration-300 placeholder-gray-400`}
+                      placeholder="Tu nombre completo"
+                      style={{ fontFamily: 'Lato, sans-serif' }}
                     />
-                    {errors.nombre && <p className="mt-1 text-red-500 text-sm">{errors.nombre}</p>}
+                    {errors.nombre && <p className="text-red-400 text-sm font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>{errors.nombre}</p>}
                   </div>
                   
                   {/* Email */}
-                  <div>
-                    <label htmlFor="email" className="block text-gray-300 mb-2">
+                  <div className="space-y-2">
+                    <label htmlFor="email" className="block text-gray-300 font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>
                       Email *
                     </label>
                     <input
@@ -318,18 +473,19 @@ ${formData.referencia ? `*Referencia:* ${formData.referencia}` : ''}`;
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className={`w-full bg-gray-700 border ${
-                        errors.email ? "border-red-500" : "border-gray-600"
-                      } rounded-sm px-4 py-3 focus:outline-none focus:border-red-500`}
+                      className={`w-full bg-gray-700/50 backdrop-blur-sm border ${
+                        errors.email ? "border-red-500" : "border-gray-600/50"
+                      } rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all duration-300 placeholder-gray-400`}
                       placeholder="tu@email.com"
+                      style={{ fontFamily: 'Lato, sans-serif' }}
                     />
-                    {errors.email && <p className="mt-1 text-red-500 text-sm">{errors.email}</p>}
+                    {errors.email && <p className="text-red-400 text-sm font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>{errors.email}</p>}
                   </div>
                   
                   {/* Teléfono */}
-                  <div>
-                    <label htmlFor="telefono" className="block text-gray-300 mb-2">
-                      Teléfono *
+                  <div className="space-y-2">
+                    <label htmlFor="telefono" className="block text-gray-300 font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>
+                      Número de WhatsApp *
                     </label>
                     <input
                       type="tel"
@@ -337,162 +493,242 @@ ${formData.referencia ? `*Referencia:* ${formData.referencia}` : ''}`;
                       name="telefono"
                       value={formData.telefono}
                       onChange={handleChange}
-                      className={`w-full bg-gray-700 border ${
-                        errors.telefono ? "border-red-500" : "border-gray-600"
-                      } rounded-sm px-4 py-3 focus:outline-none focus:border-red-500`}
-                      placeholder="Tu número de teléfono"
+                      className={`w-full bg-gray-700/50 backdrop-blur-sm border ${
+                        errors.telefono ? "border-red-500" : "border-gray-600/50"
+                      } rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all duration-300 placeholder-gray-400`}
+                      placeholder="Ej: +591 75233602"
+                      style={{ fontFamily: 'Lato, sans-serif' }}
                     />
-                    {errors.telefono && <p className="mt-1 text-red-500 text-sm">{errors.telefono}</p>}
+                    {errors.telefono && <p className="text-red-400 text-sm font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>{errors.telefono}</p>}
                   </div>
                   
                   {/* Tipo de Tatuaje */}
-                  <div>
-                    <label htmlFor="tipoTatuaje" className="block text-gray-300 mb-2">
+                  <div className="space-y-2">
+                    <label htmlFor="tipoTatuaje" className="block text-gray-300 font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>
                       Tipo de Tatuaje
                     </label>
-                    <select
-                      id="tipoTatuaje"
-                      name="tipoTatuaje"
-                      value={formData.tipoTatuaje}
-                      onChange={handleChange}
-                      className="w-full bg-gray-700 border border-gray-600 rounded-sm px-4 py-3 focus:outline-none focus:border-red-500"
-                    >
-                      <option value="personalizado">Diseño Personalizado</option>
-                      <option value="flash">Diseño Flash</option>
-                      <option value="lettering">Lettering/Tipografía</option>
-                      <option value="coverup">Cover Up</option>
-                      <option value="realista">Realista</option>
-                      <option value="tradicional">Tradicional</option>
-                      <option value="neotradicional">Neotradicional</option>
-                      <option value="blackwork">Blackwork</option>
-                      <option value="geometrico">Geométrico</option>
-                      <option value="acuarela">Acuarela</option>
-                      <option value="otro">Otro</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        id="tipoTatuaje"
+                        name="tipoTatuaje"
+                        value={formData.tipoTatuaje}
+                        onChange={handleChange}
+                        className="w-full bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all duration-300 appearance-none"
+                        style={{ fontFamily: 'Lato, sans-serif' }}
+                      >
+                        <option value="personalizado">Diseño Personalizado</option>
+                        <option value="flash">Diseño Flash</option>
+                        <option value="lettering">Lettering/Tipografía</option>
+                        <option value="coverup">Cover Up</option>
+                        <option value="realista">Realista</option>
+                        <option value="tradicional">Tradicional</option>
+                        <option value="neotradicional">Neotradicional</option>
+                        <option value="blackwork">Blackwork</option>
+                        <option value="geometrico">Geométrico</option>
+                        <option value="acuarela">Acuarela</option>
+                        <option value="otro">Otro</option>
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={20} />
+                    </div>
                   </div>
                   
                   {/* Tamaño */}
-                  <div>
-                    <label htmlFor="tamano" className="block text-gray-300 mb-2">
+                  <div className="space-y-2">
+                    <label htmlFor="tamano" className="block text-gray-300 font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>
                       Tamaño aproximado
                     </label>
-                    <select
-                      id="tamano"
-                      name="tamano"
-                      value={formData.tamano}
-                      onChange={handleChange}
-                      className="w-full bg-gray-700 border border-gray-600 rounded-sm px-4 py-3 focus:outline-none focus:border-red-500"
-                    >
-                      <option value="pequeno">Pequeño (hasta 5 cm)</option>
-                      <option value="mediano">Mediano (5-15 cm)</option>
-                      <option value="grande">Grande (15-30 cm)</option>
-                      <option value="muyGrande">Muy grande (más de 30 cm)</option>
-                      <option value="mediaManga">Media manga</option>
-                      <option value="mangaCompleta">Manga completa</option>
-                      <option value="espalda">Espalda completa</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        id="tamano"
+                        name="tamano"
+                        value={formData.tamano}
+                        onChange={handleChange}
+                        className="w-full bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all duration-300 appearance-none"
+                        style={{ fontFamily: 'Lato, sans-serif' }}
+                      >
+                        <option value="pequeno">Pequeño (hasta 5 cm)</option>
+                        <option value="mediano">Mediano (5-15 cm)</option>
+                        <option value="grande">Grande (15-30 cm)</option>
+                        <option value="muyGrande">Muy grande (más de 30 cm)</option>
+                        <option value="mediaManga">Media manga</option>
+                        <option value="mangaCompleta">Manga completa</option>
+                        <option value="espalda">Espalda completa</option>
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={20} />
+                    </div>
                   </div>
                   
-                  {/* Ubicación */}
-                  <div>
-                    <label htmlFor="ubicacion" className="block text-gray-300 mb-2">
+                  {/* Ubicación en el cuerpo */}
+                  <div className="space-y-2">
+                    <label htmlFor="ubicacion" className="block text-gray-300 font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>
                       Ubicación en el cuerpo *
                     </label>
-                    <input
-                      type="text"
-                      id="ubicacion"
-                      name="ubicacion"
-                      value={formData.ubicacion}
-                      onChange={handleChange}
-                      className={`w-full bg-gray-700 border ${
-                        errors.ubicacion ? "border-red-500" : "border-gray-600"
-                      } rounded-sm px-4 py-3 focus:outline-none focus:border-red-500`}
-                      placeholder="Ej: Antebrazo, espalda, etc."
-                    />
-                    {errors.ubicacion && <p className="mt-1 text-red-500 text-sm">{errors.ubicacion}</p>}
+                    <div className="relative">
+                      <select
+                        id="ubicacion"
+                        name="ubicacion"
+                        value={formData.ubicacion}
+                        onChange={handleChange}
+                        className={`w-full bg-gray-700/50 backdrop-blur-sm border ${
+                          errors.ubicacion ? "border-red-500" : "border-gray-600/50"
+                        } rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all duration-300 appearance-none`}
+                        style={{ fontFamily: 'Lato, sans-serif' }}
+                      >
+                        {ubicacionesCorpo.map((ubicacion) => (
+                          <option key={ubicacion.value} value={ubicacion.value}>
+                            {ubicacion.label}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={20} />
+                    </div>
+                    {errors.ubicacion && <p className="text-red-400 text-sm font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>{errors.ubicacion}</p>}
                   </div>
                   
-                  {/* Descripción */}
-                  <div className="md:col-span-2">
-                    <label htmlFor="descripcion" className="block text-gray-300 mb-2">
-                      Descripción de tu idea *
-                    </label>
-                    <textarea
-                      id="descripcion"
-                      name="descripcion"
-                      value={formData.descripcion}
-                      onChange={handleChange}
-                      rows="4"
-                      className={`w-full bg-gray-700 border ${
-                        errors.descripcion ? "border-red-500" : "border-gray-600"
-                      } rounded-sm px-4 py-3 focus:outline-none focus:border-red-500`}
-                      placeholder="Describe con detalle la idea de tu tatuaje"
-                    ></textarea>
-                    {errors.descripcion && <p className="mt-1 text-red-500 text-sm">{errors.descripcion}</p>}
-                  </div>
-                  
-                  {/* Imagen de referencia */}
-                  <div className="md:col-span-2">
-                    <label htmlFor="referencia" className="block text-gray-300 mb-2">
-                      Imagen de referencia (opcional)
-                    </label>
-                    <input
-                      type="text"
-                      id="referencia"
-                      name="referencia"
-                      value={formData.referencia}
-                      onChange={handleChange}
-                      className="w-full bg-gray-700 border border-gray-600 rounded-sm px-4 py-3 focus:outline-none focus:border-red-500"
-                      placeholder="URL de una imagen de referencia (si tienes alguna)"
-                    />
-                    <p className="mt-2 text-sm text-gray-400">
-                      Puedes subir tus imágenes a un servicio como Imgur o Google Drive y compartir el enlace aquí.
-                    </p>
-                  </div>
-                  
-                  {/* Botón de envío */}
-                  <div className="md:col-span-2 mt-4">
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded-sm transition-colors duration-300 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed w-full md:w-auto"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          Enviando...
-                        </>
-                      ) : (
-                        <>
-                          <Send size={18} className="mr-2" />
-                          Enviar a WhatsApp
-                        </>
-                      )}
-                    </button>
-                  </div>
+                  {/* Lado (solo si es necesario) */}
+                  {necesitaLado(formData.ubicacion) && (
+                    <div className="space-y-2">
+                      <label htmlFor="lado" className="block text-gray-300 font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>
+                        ¿Qué lado? *
+                      </label>
+                      <div className="relative">
+                        <select
+                          id="lado"
+                          name="lado"
+                          value={formData.lado}
+                          onChange={handleChange}
+                          className={`w-full bg-gray-700/50 backdrop-blur-sm border ${
+                            errors.lado ? "border-red-500" : "border-gray-600/50"
+                          } rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all duration-300 appearance-none`}
+                          style={{ fontFamily: 'Lato, sans-serif' }}
+                        >
+                          <option value="">Selecciona un lado</option>
+                          <option value="izquierdo">Lado izquierdo</option>
+                          <option value="derecho">Lado derecho</option>
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={20} />
+                      </div>
+                      {errors.lado && <p className="text-red-400 text-sm font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>{errors.lado}</p>}
+                    </div>
+                  )}
                 </div>
+                
+                {/* Descripción */}
+                <div className="space-y-2">
+                  <label htmlFor="descripcion" className="block text-gray-300 font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>
+                    Descripción de tu idea *
+                  </label>
+                  <textarea
+                    id="descripcion"
+                    name="descripcion"
+                    value={formData.descripcion}
+                    onChange={handleChange}
+                    rows="5"
+                    className={`w-full bg-gray-700/50 backdrop-blur-sm border ${
+                      errors.descripcion ? "border-red-500" : "border-gray-600/50"
+                    } rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all duration-300 placeholder-gray-400 resize-none`}
+                    placeholder="Describe con detalle la idea de tu tatuaje: estilo, colores, elementos que quieres incluir, inspiración, etc."
+                    style={{ fontFamily: 'Lato, sans-serif' }}
+                  ></textarea>
+                  {errors.descripcion && <p className="text-red-400 text-sm font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>{errors.descripcion}</p>}
+                </div>
+                
+                {/* Imagen de referencia */}
+                <div className="space-y-2">
+                  <label htmlFor="referencia" className="block text-gray-300 font-medium" style={{ fontFamily: 'Lato, sans-serif' }}>
+                    Imagen de referencia (opcional)
+                  </label>
+                  <input
+                    type="text"
+                    id="referencia"
+                    name="referencia"
+                    value={formData.referencia}
+                    onChange={handleChange}
+                    className="w-full bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500 transition-all duration-300 placeholder-gray-400"
+                    placeholder="https://ejemplo.com/tu-imagen.jpg"
+                    style={{ fontFamily: 'Lato, sans-serif' }}
+                  />
+                  <p className="text-sm text-gray-400" style={{ fontFamily: 'Lato, sans-serif' }}>
+                    Puedes subir tus imágenes a un servicio como Imgur, Google Drive o Dropbox y compartir el enlace aquí.
+                  </p>
+                </div>
+                
+
+<div className="pt-6">
+  <button
+    type="submit"
+    disabled={isSubmitting}
+    className="w-full px-6 py-3 sm:px-6 sm:py-3
+               bg-green-500 hover:bg-green-600 text-white
+               font-semibold rounded-full shadow-lg
+               transition-all duration-300 text-base sm:text-lg transform 
+               hover:scale-105 active:scale-95
+               disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
+    style={{ fontFamily: 'Lato, sans-serif' }}
+  >
+    {isSubmitting ? (
+      <>
+        <svg
+          className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+        Enviando...
+      </>
+    ) : (
+      <>
+        <FaWhatsapp className="mr-3 text-white w-5 h-5" />
+        Enviar consulta por WhatsApp
+      </>
+    )}
+  </button>
+</div>
+
               </form>
             </div>
           </div>
         </div>
       </div>
       
-      {/* Map Section */}
-      <div className="w-full h-96 mt-12">
-        {/* Aquí iría un mapa real, pero por ahora usamos un placeholder */}
-        <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-          <div className="text-center">
-            <MapPin size={48} className="mx-auto text-red-500 mb-4" />
-            <p className="text-xl font-semibold">Mapa de ubicación</p>
-            <p className="text-gray-400">Av. Revolución 123, Col. Condesa, CDMX</p>
-          </div>
-        </div>
-      </div>
+ {/* Map Section mejorado y 100% responsive */}
+<div className="relative px-4 sm:px-6 lg:px-8">
+  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent z-10 pointer-events-none"></div>
+
+  <div className="w-full h-[300px] sm:h-[400px] md:h-[500px] overflow-hidden rounded-xl sm:rounded-2xl shadow-2xl mb-12">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3763.844621063799!2d-99.17472798509091!3d19.39100344679364!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1ff4908c9c7d7%3A0xf6355465bd4dd3db!2sAv.%20Revoluci%C3%B3n%20123%2C%20Condesa%2C%20Cuauht%C3%A9moc%2C%2006100%20Ciudad%20de%20M%C3%A9xico%2C%20CDMX%2C%20M%C3%A9xico!5e0!3m2!1ses!2sbo!4v1719433776725!5m2!1ses!2sbo"
+      width="100%"
+      height="100%"
+      style={{
+        border: 0,
+        filter: "grayscale(20%) contrast(120%)",
+      }}
+      allowFullScreen=""
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+      title="Ubicación Villanos Tattoo"
+    ></iframe>
+  </div>
+</div>
+
+
     </div>
   );
 };
 
-export default ContactPage;
+export default ConsultPage;
