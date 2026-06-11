@@ -7,18 +7,32 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+node_modules/
+dist/
+dist-ssr/
 *.local
 
-# Editor directories and files
+# Secretos y Configuración
+.env
+.env.*
+backend/.env
+k8s/secrets.yaml
+
+# OS/Editor
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Database/Backups
+*.sql
+core.*
+backup.sql
+
+# Kubernetes locals
+.kube/

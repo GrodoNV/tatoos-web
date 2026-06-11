@@ -1,10 +1,18 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Instagram, Facebook, MessageCircle } from "lucide-react";
-import { Outlet, Link } from "react-router-dom";
+import { Menu, X, Instagram, Facebook, MessageCircle, LayoutDashboard, LogOut } from "lucide-react";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import ScrollToTop from "../components/ScrollToTop";
+import AIChat from "../components/AIChat";
+import { authService } from "../services/authService";
+
 const MainLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentUser = authService.getUser();
+  const isAdmin = currentUser?.role?.toString().toLowerCase().includes('admin');
+  const showLogoutButton = authService.isAuthenticated();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,6 +28,16 @@ const MainLayout = () => {
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
   };
+
+  const navLinks = [
+    { path: "/", label: "Inicio" },
+    { path: "/galeria", label: "Galería" },
+    { path: "/consulta", label: "Consulta" },
+  ];
+
+  if (isAdmin) {
+    navLinks.push({ path: "/dashboard", label: "Panel", icon: true });
+  }
 
   return (
     <div className="relative min-h-screen bg-black text-white">
@@ -56,19 +74,35 @@ const MainLayout = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8 items-center">
-            {["/", "/galeria", "/consulta"].map((path, index) => {
-              const labels = ["Inicio", "Galería", "Consulta"];
+            {navLinks.map((link) => {
+              const isActive = location.pathname === link.path;
               return (
                 <Link
-                  key={path}
-                  to={path}
-                  className="text-lg text-gray-300 hover:text-yellow-400 hover:underline underline-offset-4 decoration-yellow-500 transition-all duration-300 font-medium"
+                  key={link.path}
+                  to={link.path}
+                  className={`text-lg transition-all duration-300 font-medium flex items-center gap-2 ${
+                    isActive ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'
+                  }`}
                   style={{ fontFamily: "Lato, sans-serif" }}
                 >
-                  {labels[index]}
+                  {link.icon && <LayoutDashboard size={18} />}
+                  {link.label}
                 </Link>
               );
             })}
+            {showLogoutButton && (
+              <button
+                onClick={async () => {
+                  await authService.logout();
+                  navigate('/');
+                }}
+                aria-label="Cerrar sesión"
+                title="Cerrar sesión"
+                className="ml-3 p-2 bg-white/5 border border-white/10 text-red-300 hover:text-red-100 hover:bg-red-600/15 rounded-full transition-all duration-200"
+              >
+                <LogOut size={18} />
+              </button>
+            )}
           </nav>
 
           {/* Mobile Toggle */}
@@ -87,20 +121,37 @@ const MainLayout = () => {
           }`}
         >
           <div className="flex flex-col text-center py-4 space-y-4">
-            {["/", "/galeria", "/consulta"].map((path, index) => {
-              const labels = ["Inicio", "Galería", "Consulta"];
+            {navLinks.map((link) => {
+              const isActive = location.pathname === link.path;
               return (
                 <Link
-                  key={path}
-                  to={path}
+                  key={link.path}
+                  to={link.path}
                   onClick={() => setIsOpen(false)}
-                  className="text-white hover:text-yellow-400 transition-colors duration-200 font-medium"
+                  className={`transition-colors duration-200 font-medium flex justify-center items-center gap-2 ${
+                    isActive ? 'text-yellow-400' : 'text-white hover:text-yellow-400'
+                  }`}
                   style={{ fontFamily: "Lato, sans-serif" }}
                 >
-                  {labels[index]}
+                  {link.icon && <LayoutDashboard size={16} />}
+                  {link.label}
                 </Link>
               );
             })}
+            {showLogoutButton && (
+              <button
+                onClick={async () => {
+                  await authService.logout();
+                  setIsOpen(false);
+                  navigate('/');
+                }}
+                aria-label="Cerrar sesión"
+                title="Cerrar sesión"
+                className="mx-4 mt-2 p-2 bg-white/5 border border-white/10 text-red-300 hover:text-red-100 hover:bg-red-600/15 rounded-full transition-all duration-200"
+              >
+                <LogOut size={18} />
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -110,6 +161,8 @@ const MainLayout = () => {
           <ScrollToTop />
         <Outlet />
       </main>
+
+      <AIChat />
 
      <button
   onClick={handleWhatsAppClick}

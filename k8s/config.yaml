@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tatoos-config
+data:
+  DB_HOST: db-service
+  DB_PORT: "5432"
+  DB_NAME: tatoos_db
+  PORT: "3000"
+  JWT_EXPIRES_IN: 1d
+  CAPTCHA_VERIFY_URL: https://challenges.cloudflare.com/turnstile/v0/siteverify
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tatoos-secrets
+type: Opaque
+stringData:
+  DB_USERNAME: grodo
+  DB_PASSWORD: "1234"
+  JWT_SECRET: super_secret_key_change_me
+  GEMINI_API_KEY: YOUR_GEMINI_API_KEY_HERE
+  CAPTCHA_SECRET: your_captcha_secret_here
+  CLOUDINARY_CLOUD_NAME: dbxthrayx
+  CLOUDINARY_API_KEY: "514835559317835"
+  CLOUDINARY_API_SECRET: 24k7MoNXuhfpUSSZOO5reij_xmA

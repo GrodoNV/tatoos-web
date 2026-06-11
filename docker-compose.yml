@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: grodo
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: tatoos_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    networks:
+      default:
+        aliases:
+          - backend-service
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        VITE_API_URL: http://localhost:3000/api
+    ports:
+      - '4173:80'
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
