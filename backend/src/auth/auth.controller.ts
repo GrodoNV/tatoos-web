@@ -25,8 +25,8 @@ export class AuthController {
     return { message: 'Logged out successfully' };
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles('admin')
   @Post('register')
   register(@Body() data: RegisterDto, @Req() req: Request) {
     const ip = (req.ip || req.socket.remoteAddress || 'unknown') as string;
