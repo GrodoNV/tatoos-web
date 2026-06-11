@@ -12,13 +12,13 @@ export class AccessLog {
   @Column({ nullable: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   ip: string;
 
-  @Column()
+  @Column({ nullable: true })
   event: string; // 'login', 'logout', 'failed_login'
 
-  @Column()
+  @Column({ nullable: true })
   browser: string;
 
   @CreateDateColumn()

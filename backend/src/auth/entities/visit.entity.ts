@@ -5,10 +5,10 @@ export class Visit {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   ip: string;
 
-  @Column()
+  @Column({ nullable: true })
   path: string;
 
   @CreateDateColumn()
