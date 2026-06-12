@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 
+const API_URL = import.meta.env?.VITE_API_URL || 'http://localhost:3000/api';
+
 const AIChat = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -34,7 +36,7 @@ const AIChat = () => {
         text: m.text
       }));
 
-      const response = await fetch('http://localhost:3000/api/ai/chat', {
+      const response = await fetch(`${API_URL}/ai/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
