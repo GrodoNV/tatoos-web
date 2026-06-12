@@ -1,4 +1,16 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, Get, Req, UseGuards, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  Get,
+  Req,
+  UseGuards,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -25,11 +37,11 @@ export class AuthController {
     return { message: 'Logged out successfully' };
   }
 
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Post('register')
   register(@Body() data: RegisterDto, @Req() req: Request) {
-    const ip = (req.ip || req.socket.remoteAddress || 'unknown') as string;
+    const ip = req.ip || req.socket.remoteAddress || 'unknown';
     return this.authService.register(data, ip);
   }
 
@@ -43,8 +55,12 @@ export class AuthController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Patch('employees/:id')
-  updateEmployee(@Param('id') id: string, @Body() data: any, @Req() req: Request) {
-    const ip = (req.ip || req.socket.remoteAddress || 'unknown') as string;
+  updateEmployee(
+    @Param('id') id: string,
+    @Body() data: any,
+    @Req() req: Request,
+  ) {
+    const ip = req.ip || req.socket.remoteAddress || 'unknown';
     return this.authService.updateEmployee(+id, data, ip);
   }
 
@@ -52,7 +68,7 @@ export class AuthController {
   @Roles('admin')
   @Delete('employees/:id')
   deleteEmployee(@Param('id') id: string, @Req() req: Request) {
-    const ip = (req.ip || req.socket.remoteAddress || 'unknown') as string;
+    const ip = req.ip || req.socket.remoteAddress || 'unknown';
     return this.authService.deleteEmployee(+id, ip);
   }
 
@@ -72,7 +88,7 @@ export class AuthController {
 
   @Post('visit')
   logVisit(@Body('path') path: string, @Req() req: Request) {
-    const ip = (req.ip || req.socket.remoteAddress || 'unknown') as string;
+    const ip = req.ip || req.socket.remoteAddress || 'unknown';
     return this.authService.logVisit(path, ip);
   }
 }
