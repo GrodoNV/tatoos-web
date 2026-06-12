@@ -194,7 +194,37 @@ const exportPDF = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 flex font-sans">
+    <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col lg:flex-row font-sans">
+      {/* Mobile Tab Navigation */}
+      <div className="lg:hidden bg-gray-900 border-b border-white/5 sticky top-[80px] z-40">
+        <div className="flex overflow-x-auto no-scrollbar">
+          <button 
+            onClick={() => setActiveTab('stats')} 
+            className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 px-4 py-4 font-bold text-xs uppercase tracking-widest transition-colors ${activeTab === 'stats' ? 'bg-yellow-500 text-black' : 'text-gray-400'}`}
+          >
+            <TrendingUp size={16} /> Stats
+          </button>
+          <button 
+            onClick={() => setActiveTab('employees')} 
+            className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 px-4 py-4 font-bold text-xs uppercase tracking-widest transition-colors ${activeTab === 'employees' ? 'bg-yellow-500 text-black' : 'text-gray-400'}`}
+          >
+            <Users size={16} /> Staff
+          </button>
+          <button 
+            onClick={() => setActiveTab('logs')} 
+            className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 px-4 py-4 font-bold text-xs uppercase tracking-widest transition-colors ${activeTab === 'logs' ? 'bg-yellow-500 text-black' : 'text-gray-400'}`}
+          >
+            <Activity size={16} /> Logs
+          </button>
+          <button 
+            onClick={handleLogout} 
+            className="flex-1 min-w-[120px] flex items-center justify-center gap-2 px-4 py-4 font-bold text-xs uppercase tracking-widest text-red-500"
+          >
+            <LogOut size={16} /> Salir
+          </button>
+        </div>
+      </div>
+
       <aside className="w-72 bg-gray-900 border-r border-white/5 flex flex-col hidden lg:flex">
         <div className="p-10">
           <div className="flex items-center gap-4 mb-12">
@@ -204,13 +234,13 @@ const exportPDF = () => {
             <h2 className="text-xl font-black uppercase italic text-yellow-500">Villanos</h2>
           </div>
           <nav className="space-y-3">
-            <button onClick={() => setActiveTab('stats')} className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-bold text-sm ${activeTab === 'stats' ? 'bg-yellow-500 text-black' : 'text-gray-400 hover:bg-white/5'}`}>
+            <button onClick={() => setActiveTab('stats')} className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-bold text-sm transition-all ${activeTab === 'stats' ? 'bg-yellow-500 text-black' : 'text-gray-400 hover:bg-white/5'}`}>
               <TrendingUp size={20} /> Rendimiento
             </button>
-            <button onClick={() => setActiveTab('employees')} className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-bold text-sm ${activeTab === 'employees' ? 'bg-yellow-500 text-black' : 'text-gray-400 hover:bg-white/5'}`}>
+            <button onClick={() => setActiveTab('employees')} className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-bold text-sm transition-all ${activeTab === 'employees' ? 'bg-yellow-500 text-black' : 'text-gray-400 hover:bg-white/5'}`}>
               <Users size={20} /> Tatuadores
             </button>
-            <button onClick={() => setActiveTab('logs')} className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-bold text-sm ${activeTab === 'logs' ? 'bg-yellow-500 text-black' : 'text-gray-400 hover:bg-white/5'}`}>
+            <button onClick={() => setActiveTab('logs')} className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-bold text-sm transition-all ${activeTab === 'logs' ? 'bg-yellow-500 text-black' : 'text-gray-400 hover:bg-white/5'}`}>
               <Activity size={20} /> IPs / Logs
             </button>
           </nav>
@@ -222,27 +252,27 @@ const exportPDF = () => {
         </div>
       </aside>
 
-      <main className="flex-1 p-10 overflow-y-auto">
-        <header className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
-          <h1 className="text-5xl font-black uppercase tracking-tighter">Panel de Villanos</h1>
-          <button onClick={exportPDF} className="px-8 py-4 bg-white text-black font-black rounded-2xl text-xs uppercase tracking-widest">PDF Auditoría</button>
+      <main className="flex-1 p-4 md:p-10 overflow-y-auto">
+        <header className="flex flex-col sm:flex-row justify-between items-center mb-8 md:mb-12 gap-6">
+          <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-center sm:text-left">Panel de Villanos</h1>
+          <button onClick={exportPDF} className="w-full sm:w-auto px-8 py-4 bg-white text-black font-black rounded-2xl text-xs uppercase tracking-widest">PDF Auditoría</button>
         </header>
 
         {activeTab === 'stats' && (
-          <div className="space-y-10">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-              <div className="bg-gray-900 p-10 rounded-[3rem] border border-white/5"><h3 className="text-gray-500 text-[10px] font-black uppercase mb-2">Visitas</h3><p className="text-6xl font-black">{stats.totalVisits}</p></div>
-              <div className="bg-gray-900 p-10 rounded-[3rem] border border-white/5"><h3 className="text-gray-500 text-[10px] font-black uppercase mb-2">Tatuadores</h3><p className="text-6xl font-black">{stats.totalEmployees}</p></div>
-              <div className="bg-gray-900 p-10 rounded-[3rem] border border-white/5 text-green-500"><h3 className="text-gray-500 text-[10px] font-black uppercase mb-2">Status</h3><p className="text-4xl font-black uppercase">Online</p></div>
+          <div className="space-y-6 md:space-y-10">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-8 text-center">
+              <div className="bg-gray-900 p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] border border-white/5"><h3 className="text-gray-500 text-[10px] font-black uppercase mb-2">Visitas</h3><p className="text-4xl md:text-6xl font-black">{stats.totalVisits}</p></div>
+              <div className="bg-gray-900 p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] border border-white/5"><h3 className="text-gray-500 text-[10px] font-black uppercase mb-2">Tatuadores</h3><p className="text-4xl md:text-6xl font-black">{stats.totalEmployees}</p></div>
+              <div className="bg-gray-900 p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] border border-white/5 text-green-500"><h3 className="text-gray-500 text-[10px] font-black uppercase mb-2">Status</h3><p className="text-2xl md:text-4xl font-black uppercase">Online</p></div>
             </div>
-            <div className="bg-gray-900 p-12 rounded-[3.5rem] border border-white/5 h-[450px]">
+            <div className="bg-gray-900 p-4 md:p-12 rounded-[2rem] md:rounded-[3.5rem] border border-white/5 h-[300px] md:h-[450px]">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={stats.chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
-                  <XAxis dataKey="date" stroke="#4b5563" fontSize={11} />
-                  <YAxis stroke="#4b5563" fontSize={11} />
-                  <Tooltip contentStyle={{ backgroundColor: '#000', borderRadius: '15px' }} />
-                  <Line type="monotone" dataKey="visits" stroke="#eab308" strokeWidth={6} dot={{ r: 8, fill: '#eab308' }} />
+                  <XAxis dataKey="date" stroke="#4b5563" fontSize={10} />
+                  <YAxis stroke="#4b5563" fontSize={10} />
+                  <Tooltip contentStyle={{ backgroundColor: '#000', borderRadius: '15px', border: 'none' }} />
+                  <Line type="monotone" dataKey="visits" stroke="#eab308" strokeWidth={4} dot={{ r: 4, fill: '#eab308' }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -250,12 +280,12 @@ const exportPDF = () => {
         )}
 
         {activeTab === 'employees' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <div className="lg:col-span-1 bg-gray-900 p-10 rounded-[3rem] border border-white/5">
-              <h3 className="text-2xl font-black uppercase mb-6">{isEditing ? 'Editar' : 'Nuevo'} Tatuador</h3>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-12">
+            <div className="lg:col-span-1 bg-gray-900 p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] border border-white/5">
+              <h3 className="text-xl md:text-2xl font-black uppercase mb-6">{isEditing ? 'Editar' : 'Nuevo'} Tatuador</h3>
               <form onSubmit={handleRegisterOrUpdate} className="space-y-4">
-                <input type="text" placeholder="Nombre" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full p-4 bg-gray-800 rounded-xl outline-none" required />
-                <input type="email" placeholder="Email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full p-4 bg-gray-800 rounded-xl outline-none" required />
+                <input type="text" placeholder="Nombre" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full p-4 bg-gray-800 rounded-xl outline-none text-sm" required />
+                <input type="email" placeholder="Email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full p-4 bg-gray-800 rounded-xl outline-none text-sm" required />
                 
                 <div className="relative">
                   <input 
@@ -263,7 +293,7 @@ const exportPDF = () => {
                     placeholder="Contraseña" 
                     value={formData.password} 
                     onChange={(e) => setFormData({...formData, password: e.target.value})} 
-                    className="w-full p-4 bg-gray-800 rounded-xl outline-none pr-12" 
+                    className="w-full p-4 bg-gray-800 rounded-xl outline-none pr-12 text-sm" 
                     required={!isEditing} 
                   />
                   <button 
@@ -271,64 +301,68 @@ const exportPDF = () => {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
                   >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
                 
                 <div className="px-2">
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-[10px] uppercase font-black tracking-widest text-gray-500">Seguridad</span>
-                    <span className={`text-[10px] uppercase font-black tracking-widest ${strength.text}`}>{strength.label}</span>
+                    <span className="text-[9px] uppercase font-black tracking-widest text-gray-500">Seguridad</span>
+                    <span className={`text-[9px] uppercase font-black tracking-widest ${strength.text}`}>{strength.label}</span>
                   </div>
-                  <div className="h-1.5 w-full bg-gray-800 rounded-full overflow-hidden">
+                  <div className="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
                     <div className={`h-full transition-all duration-500 ${strength.color}`} style={{ width: strength.width }}></div>
                   </div>
                 </div>
 
-                <button className="w-full bg-yellow-500 text-black py-4 rounded-xl font-black uppercase mt-4">
-                  {isEditing ? 'Actualizar Tatuador' : 'Registrar Tatuador'}
+                <button className="w-full bg-yellow-500 text-black py-4 rounded-xl font-black uppercase mt-4 text-xs tracking-widest">
+                  {isEditing ? 'Actualizar' : 'Registrar'}
                 </button>
-                {isEditing && <button type="button" onClick={() => { setIsEditing(null); setFormData({name:'', email:'', password:'', role:'tatuador'}); }} className="w-full bg-gray-800 text-white py-2 rounded-xl text-xs uppercase">Cancelar</button>}
+                {isEditing && <button type="button" onClick={() => { setIsEditing(null); setFormData({name:'', email:'', password:'', role:'tatuador'}); }} className="w-full bg-gray-800 text-white py-3 rounded-xl text-[10px] uppercase font-bold tracking-widest">Cancelar</button>}
               </form>
             </div>
-            <div className="lg:col-span-2 bg-gray-900 rounded-[3rem] overflow-hidden border border-white/5">
-              <table className="w-full">
-                <thead className="bg-gray-800 text-[10px] uppercase font-black"><tr><th className="p-6 text-left">Tatuador</th><th className="p-6 text-right">Acciones</th></tr></thead>
-                <tbody className="divide-y divide-white/5">
-                  {employees.map(emp => (
-                    <tr key={emp.id} className="group">
-                      <td className="p-6">
-                        <div className="font-bold text-sm uppercase">{emp.name}</div>
-                        <div className="text-xs text-gray-500">{emp.email} <span className="text-yellow-500/50">[{getRoleDisplay(emp.role)}]</span></div>
-                      </td>
-                      <td className="p-6 text-right opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => handleEdit(emp)} className="p-2 hover:text-yellow-500"><Edit size={16} /></button>
-                        {emp.role !== 'admin' && (
-                           <button onClick={() => handleDelete(emp.id)} className="p-2 hover:text-red-500"><Trash2 size={16} /></button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="lg:col-span-2 bg-gray-900 rounded-[2rem] md:rounded-[3rem] overflow-hidden border border-white/5">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-800 text-[10px] uppercase font-black"><tr><th className="p-4 md:p-6 text-left">Tatuador</th><th className="p-4 md:p-6 text-right">Acciones</th></tr></thead>
+                  <tbody className="divide-y divide-white/5">
+                    {employees.map(emp => (
+                      <tr key={emp.id} className="group">
+                        <td className="p-4 md:p-6">
+                          <div className="font-bold text-xs md:text-sm uppercase">{emp.name}</div>
+                          <div className="text-[10px] md:text-xs text-gray-500">{emp.email} <span className="hidden sm:inline text-yellow-500/50">[{getRoleDisplay(emp.role)}]</span></div>
+                        </td>
+                        <td className="p-4 md:p-6 text-right lg:opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button onClick={() => handleEdit(emp)} className="p-2 hover:text-yellow-500"><Edit size={16} /></button>
+                          {emp.role !== 'admin' && (
+                             <button onClick={() => handleDelete(emp.id)} className="p-2 hover:text-red-500"><Trash2 size={16} /></button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}
 
         {activeTab === 'logs' && (
-           <div className="bg-gray-900 rounded-[3rem] overflow-hidden border border-white/5">
-             <table className="w-full">
-               <thead className="bg-gray-800 text-[10px] uppercase font-black"><tr><th className="p-6 text-left">IP / Usuario</th><th className="p-6 text-left">Evento</th><th className="p-6 text-right">Fecha</th></tr></thead>
-               <tbody className="divide-y divide-white/5 text-xs">
-                 {logs.map(log => (
-                   <tr key={log.id}>
-                     <td className="p-6"><div className="font-bold">{log.email}</div><div className="text-[10px] text-blue-400 font-mono">{log.ip}</div></td>
-                     <td className="p-6"><span className={`px-3 py-1 rounded-full ${log.event === 'login' ? 'bg-green-500/10 text-green-500' : 'bg-gray-800'}`}>{log.event}</span></td>
-                     <td className="p-6 text-right text-gray-500">{new Date(log.timestamp).toLocaleString()}</td>
-                   </tr>
-                 ))}
-               </tbody>
-             </table>
+           <div className="bg-gray-900 rounded-[2rem] md:rounded-[3rem] overflow-hidden border border-white/5">
+             <div className="overflow-x-auto">
+               <table className="w-full min-w-[600px]">
+                 <thead className="bg-gray-800 text-[10px] uppercase font-black"><tr><th className="p-4 md:p-6 text-left">IP / Usuario</th><th className="p-4 md:p-6 text-left">Evento</th><th className="p-4 md:p-6 text-right">Fecha</th></tr></thead>
+                 <tbody className="divide-y divide-white/5 text-[10px] md:text-xs">
+                   {logs.map(log => (
+                     <tr key={log.id}>
+                       <td className="p-4 md:p-6"><div className="font-bold">{log.email}</div><div className="text-[9px] md:text-[10px] text-blue-400 font-mono">{log.ip}</div></td>
+                       <td className="p-4 md:p-6"><span className={`px-2 md:px-3 py-1 rounded-full ${log.event === 'login' ? 'bg-green-500/10 text-green-500' : 'bg-gray-800'}`}>{log.event}</span></td>
+                       <td className="p-4 md:p-6 text-right text-gray-500">{new Date(log.timestamp).toLocaleString()}</td>
+                     </tr>
+                   ))}
+                 </tbody>
+               </table>
+             </div>
            </div>
         )}
       </main>
