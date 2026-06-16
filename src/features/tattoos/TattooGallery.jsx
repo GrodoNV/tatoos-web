@@ -122,27 +122,26 @@ const TattooGallery = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="flex flex-col md:flex-row justify-between items-baseline mb-16 gap-4">
+    <div className="container mx-auto px-4 py-8 md:py-12">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-baseline mb-8 md:mb-16 gap-4">
         <div>
-          <h2 className="text-6xl font-black text-white uppercase tracking-tighter leading-none mb-2">Galería</h2>
-          <p className="text-gray-500 font-medium tracking-widest uppercase text-xs">Portafolio Profesional</p>
+          <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-none mb-2">Galería</h2>
+          <p className="text-gray-500 font-medium tracking-widest uppercase text-[10px] md:text-xs">Portafolio Profesional</p>
         </div>
-        
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-10">
         {isAdmin && (
           <button 
             onClick={() => handleOpenModal()}
-            className="group relative aspect-[4/5] bg-gray-900 rounded-3xl border-2 border-dashed border-gray-800 hover:border-purple-500/50 transition-all flex flex-col items-center justify-center gap-4 overflow-hidden"
+            className="group relative aspect-[4/5] bg-gray-900 rounded-2xl md:rounded-3xl border-2 border-dashed border-gray-800 hover:border-purple-500/50 transition-all flex flex-col items-center justify-center gap-4 overflow-hidden"
           >
-            <div className="p-6 bg-gray-800 rounded-full group-hover:bg-purple-600 transition-colors duration-500">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="p-4 md:p-6 bg-gray-800 rounded-full group-hover:bg-purple-600 transition-colors duration-500">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 md:h-8 md:w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
               </svg>
             </div>
-            <span className="text-gray-500 font-black uppercase tracking-widest text-sm group-hover:text-white transition-colors">Agregar Trabajo</span>
+            <span className="text-gray-500 font-black uppercase tracking-widest text-xs md:text-sm group-hover:text-white transition-colors">Agregar Trabajo</span>
             <div className="absolute inset-0 bg-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
           </button>
         )}
@@ -166,10 +165,10 @@ const TattooGallery = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-md">
-          <div className="bg-gray-900 border border-gray-800 w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-            <div className="p-10">
-              <div className="flex justify-between items-center mb-8">
-                <h3 className="text-3xl font-black text-white uppercase tracking-tighter">
+          <div className="bg-gray-900 border border-gray-800 w-full max-w-xl rounded-3xl md:rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div className="p-6 md:p-10">
+              <div className="flex justify-between items-center mb-6 md:mb-8">
+                <h3 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter">
                   {editingTattoo ? 'Editar Trabajo' : 'Nuevo Tatuaje'}
                 </h3>
                 <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-white transition-colors">
