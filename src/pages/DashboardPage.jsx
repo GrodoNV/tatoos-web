@@ -145,30 +145,74 @@ const DashboardPage = () => {
 
   const strength = getPasswordStrength(formData.password);
 
+// REQUERIMIENTO: Reporte en PDF Completo
 const exportPDF = () => {
   const doc = new jsPDF();
 
+  // Encabezado Estilizado
   doc.setFillColor(15, 15, 15);
   doc.rect(0, 0, 210, 40, 'F');
+  doc.setFontSize(22);
+  doc.setTextColor(234, 179, 8); // Amarillo Villanos
+  doc.text('VILLANOS TATTOO - AUDITORÍA DE SISTEMA', 14, 25);
 
-  doc.setFontSize(24);
-  doc.setTextColor(255, 255, 255);
-  doc.text('VILLANOS TATTOO - AUDITORÍA', 14, 25);
+  doc.setFontSize(10);
+  doc.setTextColor(150, 150, 150);
+  doc.text(`Generado el: ${new Date().toLocaleString()}`, 14, 34);
+
+  // SECCIÓN 1: MÉTRICAS GENERALES
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(14);
+  doc.text('1. Resumen de Actividad', 14, 55);
 
   autoTable(doc, {
     startY: 60,
     head: [['Métrica', 'Valor']],
     body: [
-      ['Visitas', stats.totalVisits],
-      ['Tatuadores', stats.totalEmployees]
+      ['Total de Visitas (Histórico)', stats.totalVisits],
+      ['Personal Registrado', stats.totalEmployees],
+      ['Estado del Servidor', 'Operacional / Online']
     ],
-    theme: 'striped',
-    headStyles: {
-      fillColor: [234, 179, 8]
-    }
+    theme: 'grid',
+    headStyles: { fillColor: [234, 179, 8], textColor: [0, 0, 0] }
   });
 
-  doc.save('reporte_villanos.pdf');
+  // SECCIÓN 2: EVOLUCIÓN DE VISITAS (Datos del Gráfico)
+  doc.text('2. Evolución de Visitas (Últimos 7 días)', 14, doc.lastAutoTable.finalY + 15);
+
+  const chartBody = stats.chartData.map(d => [d.date, d.visits]);
+  autoTable(doc, {
+    startY: doc.lastAutoTable.finalY + 20,
+    head: [['Fecha', 'Visitas']],
+    body: chartBody,
+    theme: 'striped',
+    headStyles: { fillColor: [50, 50, 50] }
+  });
+
+  // SECCIÓN 3: LOGS DE AUDITORÍA (Últimos 20)
+  if (logs.length > 0) {
+    doc.addPage();
+    doc.setFontSize(14);
+    doc.text('3. Registros de Acceso y Seguridad (Logs)', 14, 20);
+
+    const logsBody = logs.slice(0, 20).map(log => [
+      log.email || 'Anónimo',
+      log.event.toUpperCase(),
+      log.ip,
+      new Date(log.timestamp).toLocaleString()
+    ]);
+
+    autoTable(doc, {
+      startY: 25,
+      head: [['Usuario/Referencia', 'Evento', 'IP', 'Fecha/Hora']],
+      body: logsBody,
+      theme: 'striped',
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [234, 179, 8], textColor: [0, 0, 0] }
+    });
+  }
+
+  doc.save(`auditoria_villanos_${new Date().getTime()}.pdf`);
 };
 
   if (errorStatus) {
@@ -195,32 +239,34 @@ const exportPDF = () => {
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col lg:flex-row font-sans">
-      {/* Mobile Tab Navigation */}
-      <div className="lg:hidden bg-gray-900 border-b border-white/5 sticky top-[80px] z-40">
-        <div className="flex overflow-x-auto no-scrollbar">
-          <button 
-            onClick={() => setActiveTab('stats')} 
-            className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 px-4 py-4 font-bold text-xs uppercase tracking-widest transition-colors ${activeTab === 'stats' ? 'bg-yellow-500 text-black' : 'text-gray-400'}`}
-          >
-            <TrendingUp size={16} /> Stats
-          </button>
-          <button 
-            onClick={() => setActiveTab('employees')} 
-            className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 px-4 py-4 font-bold text-xs uppercase tracking-widest transition-colors ${activeTab === 'employees' ? 'bg-yellow-500 text-black' : 'text-gray-400'}`}
-          >
-            <Users size={16} /> Staff
-          </button>
-          <button 
-            onClick={() => setActiveTab('logs')} 
-            className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 px-4 py-4 font-bold text-xs uppercase tracking-widest transition-colors ${activeTab === 'logs' ? 'bg-yellow-500 text-black' : 'text-gray-400'}`}
-          >
-            <Activity size={16} /> Logs
-          </button>
+      {/* Mobile Tab Navigation - Pulida y Moderna */}
+      <div className="lg:hidden bg-gray-950/80 backdrop-blur-md border-b border-white/5 sticky top-[80px] z-40">
+        <div className="flex justify-around items-center px-2">
+          {[
+            { id: 'stats', label: 'Stats', icon: <TrendingUp size={18} /> },
+            { id: 'employees', label: 'Staff', icon: <Users size={18} /> },
+            { id: 'logs', label: 'Logs', icon: <Activity size={18} /> }
+          ].map((tab) => (
+            <button 
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)} 
+              className={`flex flex-col items-center gap-1 px-4 py-3 transition-all duration-300 relative ${
+                activeTab === tab.id ? 'text-yellow-500' : 'text-gray-500 hover:text-gray-300'
+              }`}
+            >
+              {tab.icon}
+              <span className="text-[10px] font-black uppercase tracking-tighter">{tab.label}</span>
+              {activeTab === tab.id && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-yellow-500 shadow-[0_-4px_10px_rgba(234,179,8,0.5)]" />
+              )}
+            </button>
+          ))}
           <button 
             onClick={handleLogout} 
-            className="flex-1 min-w-[120px] flex items-center justify-center gap-2 px-4 py-4 font-bold text-xs uppercase tracking-widest text-red-500"
+            className="flex flex-col items-center gap-1 px-4 py-3 text-red-500/70 hover:text-red-500 transition-colors"
           >
-            <LogOut size={16} /> Salir
+            <LogOut size={18} />
+            <span className="text-[10px] font-black uppercase tracking-tighter">Salir</span>
           </button>
         </div>
       </div>

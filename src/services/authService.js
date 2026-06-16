@@ -65,6 +65,7 @@ export const authService = {
         'Authorization': `Bearer ${localStorage.getItem('admin_token')}`
       },
     });
+    if (!response.ok) throw new Error('No autorizado o error de servidor');
     return response.json();
   },
 
@@ -91,10 +92,7 @@ export const authService = {
         'Authorization': `Bearer ${localStorage.getItem('admin_token')}`
       },
     });
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Error al eliminar empleado');
-    }
+    if (!response.ok) throw new Error('No autorizado o error al eliminar');
     return response.json();
   },
 
@@ -104,6 +102,7 @@ export const authService = {
         'Authorization': `Bearer ${localStorage.getItem('admin_token')}`
       },
     });
+    if (!response.ok) throw new Error('No autorizado para ver logs');
     return response.json();
   },
 
@@ -113,6 +112,7 @@ export const authService = {
         'Authorization': `Bearer ${localStorage.getItem('admin_token')}`
       },
     });
+    if (!response.ok) throw new Error('No autorizado para ver estadísticas');
     return response.json();
   },
 

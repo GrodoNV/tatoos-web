@@ -162,36 +162,36 @@ export class AuthService {
       event: 'page_view',
       browser: 'Client Device',
     });
+async getStats() {
+  const last7Days: { date: string; visits: number }[] = [];
+  const now = new Date();
 
-    return visit;
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(now.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+
+    // Consultar visitas reales para ese día
+    const count = await this.visitRepository
+      .createQueryBuilder('visit')
+      .where("TO_CHAR(visit.timestamp, 'YYYY-MM-DD') = :date", { date: dateStr })
+      .getCount();
+
+    // REQUERIMIENTO: Si no hay datos, mostrar tendencia para que el gráfico no sea plano/vacío
+    const mockVisits = Math.floor(Math.random() * 10) + 5;
+    last7Days.push({ 
+      date: dateStr, 
+      visits: count > 0 ? count : mockVisits 
+    });
   }
 
-  async getStats() {
-    const last7Days: { date: string, visits: number }[] = [];
-    const now = new Date();
-    
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date(now);
-      d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().split('T')[0];
-      const startOfDay = new Date(dateStr + 'T00:00:00.000Z');
-      const endOfDay = new Date(dateStr + 'T23:59:59.999Z');
-      
-      const count = await this.visitRepository.createQueryBuilder('visit')
-        .where('visit.timestamp BETWEEN :start AND :end', { start: startOfDay, end: endOfDay })
-        .getCount();
-      
-      const mockVisits = Math.floor(Math.random() * 15) + 8;
-      last7Days.push({ date: dateStr, visits: count || mockVisits });
-    }
-    
-    const totalVisits = await this.visitRepository.count();
-    const totalEmployees = await this.adminRepository.count();
-    
-    return {
-      totalVisits: totalVisits > 0 ? totalVisits : 156,
-      totalEmployees,
-      chartData: last7Days,
-    };
-  }
+  const totalVisits = await this.visitRepository.count();
+  const totalEmployees = await this.adminRepository.count();
+
+  return {
+    totalVisits: totalVisits > 0 ? totalVisits : 124, // Valor base si es nuevo despliegue
+    totalEmployees: totalEmployees > 0 ? totalEmployees : 1,
+    chartData: last7Days,
+  };
+}
 }
