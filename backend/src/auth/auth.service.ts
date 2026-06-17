@@ -132,10 +132,10 @@ export class AuthService {
   async deleteEmployee(id: number, ip: string = 'unknown') {
     const employee = await this.adminRepository.findOneBy({ id });
     const email = employee?.email || 'unknown';
-    await this.adminRepository.delete(id);
+    await this.adminRepository.softDelete(id);
 
     await this.accessLogRepository.save({
-      email: `ADMIN: Deleted ${email}`,
+      email: `ADMIN: Deleted (Soft) ${email}`,
       ip,
       event: 'user_deleted',
       browser: 'Dashboard',
@@ -162,7 +162,9 @@ export class AuthService {
       event: 'page_view',
       browser: 'Client Device',
     });
-async getStats() {
+  }
+
+  async getStats() {
   const last7Days: { date: string; visits: number }[] = [];
   const now = new Date();
 

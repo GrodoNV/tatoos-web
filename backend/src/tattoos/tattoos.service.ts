@@ -56,10 +56,10 @@ export class TattoosService {
 
   async remove(id: number, ip: string = 'unknown') {
     const tattoo = await this.findOne(id);
-    await this.tattooRepository.remove(tattoo);
+    await this.tattooRepository.softRemove(tattoo);
 
     await this.accessLogRepository.save({
-      email: `GALLERY: Deleted "${tattoo.title}"`,
+      email: `GALLERY: Deleted (Soft) "${tattoo.title}"`,
       ip,
       event: 'gallery_delete',
       browser: 'Dashboard/Gallery',
