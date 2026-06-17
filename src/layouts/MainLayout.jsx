@@ -19,8 +19,12 @@ const MainLayout = () => {
       setScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
+    
+    // Registrar visita cada vez que cambia la ruta
+    authService.logVisit(location.pathname);
+
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [location.pathname]);
 
   const handleWhatsAppClick = () => {
     const phoneNumber = "59112345678";
